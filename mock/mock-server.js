@@ -2,21 +2,17 @@ const chokidar = require('chokidar')
 const bodyParser = require('body-parser')
 const chalk = require('chalk')
 const path = require('path')
-const Mock = require('mockjs')
 
 const mockDir = path.join(process.cwd(), 'mock')
 
 function registerRoutes(app) {
   let mockLastIndex
-  const { mocks } = require('./index.js')
-  const mocksForServer = mocks.map(route => {
-    return responseFake(route.url, route.type, route.response)
-  })
-  for (const mock of mocksForServer) {
+  const { default: mocks } = require('./index.js')
+  for (const mock of mocks) {
     app[mock.type](mock.url, mock.response)
     mockLastIndex = app._router.stack.length
   }
-  const mockRoutesLength = Object.keys(mocksForServer).length
+  const mockRoutesLength = Object.keys(mocks).length
   return {
     mockRoutesLength: mockRoutesLength,
     mockStartIndex: mockLastIndex - mockRoutesLength
@@ -31,19 +27,10 @@ function unregisterRoutes() {
   })
 }
 
-// for mock server
-const responseFake = (url, type, respond) => {
-  return {
-    url: new RegExp(`${process.env.VUE_APP_BASE_API}${url}`),
-    type: type || 'get',
-    response(req, res) {
-      console.log('request invoke:' + req.path)
-      res.json(Mock.mock(respond instanceof Function ? respond(req, res) : respond))
-    }
-  }
-}
-
 module.exports = app => {
+  // es6 polyfill
+  require('@babel/register')
+
   // parse app.body
   // https://expressjs.com/en/4x/api.html#req.body
   app.use(bodyParser.json())

@@ -13,11 +13,11 @@
 </template>
 
 <script>
-import TabPane from './components/TabPane'
+import tabPane from './components/TabPane'
 
 export default {
   name: 'Tab',
-  components: { TabPane },
+  components: { tabPane },
   data() {
     return {
       tabMapOptions: [
