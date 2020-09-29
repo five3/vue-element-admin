@@ -84,6 +84,20 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/todo',
+    component: Layout,
+    redirect: '/todo/index',
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/todo/index'),
+        name: 'Profile',
+        meta: { title: '任务列表', icon: 'list', noCache: true }
+      }
+    ]
+  },
+  {
     path: '/profile',
     component: Layout,
     redirect: '/profile/index',
