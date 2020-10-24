@@ -67,9 +67,10 @@
       <el-row :gutter="20">
         <el-col :span="24" :xs="24">
           <el-drawer
-          title=""
-          :visible.sync="drawer"
-          :with-header="false">
+            title=""
+            :visible.sync="drawer"
+            :with-header="false"
+          >
             <div style="padding: 10px;">
               <h3>{{ title }}</h3>
               <el-form ref="form" :model="form" label-width="80px">
@@ -80,20 +81,32 @@
                   <el-input v-model="form.desc" />
                 </el-form-item>
                 <el-form-item label="开始时间">
-                  <el-input v-model="form.start_time" />
+                  <el-date-picker
+                    v-model="form.start_time"
+                    align="right"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    placeholder="选择日期"
+                  />
                 </el-form-item>
                 <el-form-item label="结束时间">
-                  <el-input v-model="form.end_time" />
+                  <el-date-picker
+                    v-model="form.end_time"
+                    align="right"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    placeholder="选择日期"
+                  />
                 </el-form-item>
                 <el-form-item label="执行人">
                   <el-input v-model="form.assign" />
                 </el-form-item>
                 <el-form-item label="任务状态">
                   <el-select v-model="form.status" placeholder="请选择任务状态">
-                    <el-option label="待执行" value="INIT"></el-option>
-                    <el-option label="进行中" value="INPROCESS"></el-option>
-                    <el-option label="已完成" value="FINISHED"></el-option>
-                    <el-option label="已废弃" value="DISCARD"></el-option>
+                    <el-option label="待执行" value="INIT" />
+                    <el-option label="进行中" value="INPROCESS" />
+                    <el-option label="已完成" value="FINISHED" />
+                    <el-option label="已废弃" value="DISCARD" />
                   </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -118,14 +131,7 @@ export default {
       title: '',
       drawer: false,
       activeTab: 'current',
-      tableData: [{
-        'name': '测试任务',
-        'desc': '任务描述',
-        'start_time': '2020-06-21',
-        'end_time': '2020-07-01',
-        'assign': '张三',
-        'status': '进行中'
-      }],
+      tableData: [],
       form: {
         'name': '',
         'desc': '',
@@ -162,6 +168,7 @@ export default {
             message: '保存成功！',
             type: 'success'
           })
+          this.drawer = false
         }
       })
     },

@@ -11,10 +11,10 @@ export function submit(data) {
   })
 }
 
-export function pullData(par) {
+export function pullData(params) {
   return request({
-    url: '/api/todo',
+    url: '/api/todo/list',
     method: 'get',
-    params: par
+    params
   })
 }
