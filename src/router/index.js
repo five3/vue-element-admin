@@ -92,8 +92,22 @@ export const constantRoutes = [
       {
         path: 'index',
         component: () => import('@/views/todo/index'),
-        name: 'Profile',
+        name: 'todo',
         meta: { title: '任务列表', icon: 'list', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/hproxy',
+    component: Layout,
+    redirect: '/hproxy/index',
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/hproxy/index'),
+        name: 'hproxy',
+        meta: { title: 'HProxy设置', icon: 'list', noCache: true }
       }
     ]
   },

@@ -1,0 +1,155 @@
+<template>
+  <div class="app-container">
+    <div>
+      <el-row :gutter="20">
+        <el-col :span="24" :xs="24">
+          <el-card>
+            <el-button type="primary" @click="createHook">添加HOOK</el-button>
+          </el-card>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="24" :xs="24">
+          <el-table
+            :data="tableData"
+            border
+            style="width: 100%;">
+            <el-table-column
+              fixed
+              prop="name"
+              label="HOOK名称"
+              width="200">
+            </el-table-column>
+            <el-table-column
+              prop="type"
+              label="HOOK类型"
+              width="100">
+            </el-table-column>
+            <el-table-column
+              prop="content_preview"
+              label="HOOK内容">
+            </el-table-column>
+            <el-table-column
+              prop="created_time"
+              label="创建时间"
+              width="150">
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              label="操作"
+              width="60">
+              <template slot-scope="scope">
+                <el-button type="text" size="small" @click="editHook(scope.row)">编辑</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div style="text-align: right; margin: 5px;">
+            <el-pagination
+              background
+              layout="prev, pager, next"
+              :page-size="query.pageSize"
+              :total="query.total">
+            </el-pagination>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="24" :xs="24">
+          <el-drawer
+            title=""
+            :visible.sync="drawer"
+            :with-header="false"
+            size="50%"
+          >
+            <div style="padding: 10px;">
+              <h3>{{ title }}</h3>
+              <el-divider content-position="left"></el-divider>
+              <el-form ref="form" :model="form" label-width="80px">
+                <el-form-item label="名称">
+                  <el-input v-model="form.name" />
+                </el-form-item>
+                <el-form-item label="类型">
+                  <el-select v-model="form.type" placeholder="请选择HOOK类型">
+                    <el-option label="请求HOOK" value="REQUEST" />
+                    <el-option label="响应HOOK" value="RESPONSE" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="脚本内容">
+                  <el-input type="textarea" :autosize="{ minRows: 15, maxRows: 18}" v-model="form.content" />
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" @click="onSubmit">保存</el-button>
+                  <el-button @click="drawer = false">取消</el-button>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-drawer>
+        </el-col>
+      </el-row>
+    </div>
+  </div>
+</template>
+
+<script>
+import { submit, pullData } from '@/api/hproxy'
+export default {
+  name: 'HProxy',
+  data() {
+    return {
+      title: '',
+      drawer: false,
+      tableData: [],
+      form: {
+        'name': '',
+        'type': '',
+        'content': ''
+      },
+      query: {
+        page: 1,
+        pageSize: 10,
+        total: 0
+      }
+    }
+  },
+  mounted() {
+    this.getHookList({
+      ...this.query
+    })
+  },
+  methods: {
+    createHook() {
+      this.title = '添加HOOK'
+      this.drawer = true
+      this.form = {}
+    },
+    editHook(row) {
+      this.title = '编辑HOOK'
+      this.drawer = true
+      this.form = row
+    },
+    onSubmit() {
+      submit(this.form).then((response) => {
+        if (response.code === 0) {
+          this.getHookList({
+            page: 1,
+            pageSize: 10
+          })
+          this.$message({
+            showClose: true,
+            message: '保存成功！',
+            type: 'success'
+          })
+          this.drawer = false
+        }
+      })
+    },
+    getHookList(data) {
+      pullData(data).then((response) => {
+        if (response.code === 0) {
+          this.tableData = response.data
+        }
+      })
+    }
+  }
+}
+</script>
