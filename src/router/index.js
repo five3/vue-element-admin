@@ -112,6 +112,48 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/imock',
+    component: Layout,
+    redirect: '/imock/index',
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/imock/index'),
+        name: 'imock',
+        meta: { title: 'iMock设置', icon: 'list', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/idata',
+    component: Layout,
+    redirect: '/idata/index',
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/idata/index'),
+        name: 'idata',
+        meta: { title: 'iData设置', icon: 'list', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/keywordfw',
+    component: Layout,
+    redirect: '/keywordfw/index',
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/keywordfw/index'),
+        name: 'keywordfw',
+        meta: { title: '关键字驱动测试', icon: 'list', noCache: true }
+      }
+    ]
+  },
+  {
     path: '/profile',
     component: Layout,
     redirect: '/profile/index',

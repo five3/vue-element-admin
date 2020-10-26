@@ -26,6 +26,16 @@
               width="100">
             </el-table-column>
             <el-table-column
+              prop="type"
+              label="源IP"
+              width="100">
+            </el-table-column>
+            <el-table-column
+              prop="type"
+              label="目标HOST"
+              width="100">
+            </el-table-column>
+            <el-table-column
               prop="content_preview"
               label="HOOK内容">
             </el-table-column>
@@ -66,7 +76,7 @@
               <el-divider content-position="left"></el-divider>
               <el-form ref="form" :model="form" label-width="80px">
                 <el-form-item label="名称">
-                  <el-input v-model="form.name" />
+                  <el-input v-model="form.name" placeholder="请输入HOOK名称" />
                 </el-form-item>
                 <el-form-item label="类型">
                   <el-select v-model="form.type" placeholder="请选择HOOK类型">
@@ -74,8 +84,14 @@
                     <el-option label="响应HOOK" value="RESPONSE" />
                   </el-select>
                 </el-form-item>
+                <el-form-item label="源IP">
+                  <el-input v-model="form.source" placeholder="请输入需要处理的请求IP" />
+                </el-form-item>
+                <el-form-item label="目标HOST">
+                  <el-input v-model="form.target" placeholder="请输入需要处理的请求HOST" />
+                </el-form-item>
                 <el-form-item label="脚本内容">
-                  <el-input type="textarea" :autosize="{ minRows: 15, maxRows: 18}" v-model="form.content" />
+                  <el-input type="textarea" :autosize="{ minRows: 8, maxRows: 12}" v-model="form.content" placeholder="请输入HOOK脚本内容" />
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" @click="onSubmit">保存</el-button>
@@ -102,6 +118,8 @@ export default {
       form: {
         'name': '',
         'type': '',
+        'source': '',
+        'target': '',
         'content': ''
       },
       query: {
