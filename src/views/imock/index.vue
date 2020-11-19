@@ -6,7 +6,8 @@
       </el-form-item>
       <el-form-item label="匹配域名">
         <el-input
-        v-model="formData.host"        placeholder="Mock匹配的请求域名，比如： www.baidu.com。 匹配任意域名可使用*"></el-input>
+        v-model="formData.host"
+        placeholder="Mock匹配的请求域名，比如： www.baidu.com。 匹配任意域名可使用*"></el-input>
       </el-form-item>
       <el-form-item label="匹配路径">
         <el-input
@@ -61,12 +62,11 @@
     </el-drawer>
   </div>
 </template>
-
 <script>
-
+/* eslint-disable */
 import { getTestMock, setTestMock } from '@/api/imock'
 export default {
-  name: 'imock',
+  name: 'iMock',
   data() {
     return {
       title: 'iMock设置',
@@ -85,7 +85,7 @@ export default {
   },
   computed: {
     reqURL: {
-      get () {
+      get() {
         if (this.formData.host) {
           return `http://${this.formData.host}${this.formData.path}`
         } else {
@@ -95,9 +95,8 @@ export default {
     }
   },
   methods: {
-    warpData () {
-      let data = {}
-      
+    warpData() {
+      const data = {}
       data.host = this.formData.host || '*'
       data.url = this.formData.path || '/'
       data.method = this.formData.method || '*'
@@ -109,8 +108,8 @@ export default {
 
       return data
     },
-    onSubmit () {
-      let data = this.warpData()
+    onSubmit() {
+      const data = this.warpData()
       setTestMock(data).then(res => {
         this.$message({
           message: '设置Mock成功！',
@@ -120,7 +119,7 @@ export default {
         this.$log.danger(err)
       })
     },
-    onView () {
+    onView() {
       getTestMock().then(res => {
         this.mockData = res
         this.$message({
