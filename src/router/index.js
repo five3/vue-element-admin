@@ -140,16 +140,23 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/keywordfw',
+    path: '/http',
     component: Layout,
-    redirect: '/keywordfw/index',
+    redirect: '/http/list',
+    meta: { title: 'HTTP API', icon: 'list', noCache: false },
     hidden: false,
     children: [
       {
-        path: 'index',
-        component: () => import('@/views/keywordfw/index'),
-        name: 'keywordfw',
-        meta: { title: '关键字驱动测试', icon: 'list', noCache: true }
+        path: 'list',
+        component: () => import('@/views/http/list/index'),
+        name: 'http-list',
+        meta: { title: 'HTTP API列表', icon: 'list', noCache: false }
+      },
+      {
+        path: 'api',
+        component: () => import('@/views/http/api/index'),
+        name: 'http-api',
+        meta: { title: 'HTTP API用例', icon: 'list', noCache: true }
       }
     ]
   },

@@ -17,8 +17,7 @@
             <el-table-column
               fixed
               prop="name"
-              label="HOOK名称"
-              width="200">
+              label="HOOK名称">
             </el-table-column>
             <el-table-column
               prop="type"
@@ -26,23 +25,23 @@
               width="100">
             </el-table-column>
             <el-table-column
-              prop="type"
+              prop="source"
               label="源IP"
-              width="100">
+              width="120">
             </el-table-column>
             <el-table-column
-              prop="type"
-              label="目标HOST"
-              width="100">
+              prop="target"
+              label="目标域名"
+              width="120">
             </el-table-column>
             <el-table-column
-              prop="content_preview"
+              prop="content"
               label="HOOK内容">
             </el-table-column>
             <el-table-column
               prop="created_time"
               label="创建时间"
-              width="150">
+              width="160">
             </el-table-column>
             <el-table-column
               fixed="right"
@@ -87,8 +86,8 @@
                 <el-form-item label="源IP">
                   <el-input v-model="form.source" placeholder="请输入需要处理的请求IP" />
                 </el-form-item>
-                <el-form-item label="目标HOST">
-                  <el-input v-model="form.target" placeholder="请输入需要处理的请求HOST" />
+                <el-form-item label="目标域名">
+                  <el-input v-model="form.target" placeholder="请输入需要处理的目标域名" />
                 </el-form-item>
                 <el-form-item label="脚本内容">
                   <el-input type="textarea" :autosize="{ minRows: 8, maxRows: 12}" v-model="form.content" placeholder="请输入HOOK脚本内容" />
@@ -123,16 +122,14 @@ export default {
         'content': ''
       },
       query: {
-        page: 1,
+        pageNum: 1,
         pageSize: 10,
         total: 0
       }
     }
   },
   mounted() {
-    this.getHookList({
-      ...this.query
-    })
+    this.fetchData()
   },
   methods: {
     createHook() {
@@ -148,10 +145,8 @@ export default {
     onSubmit() {
       submit(this.form).then((response) => {
         if (response.code === 0) {
-          this.getHookList({
-            page: 1,
-            pageSize: 10
-          })
+          this.query.pageNum = 1
+          this.fetchData()
           this.$message({
             showClose: true,
             message: '保存成功！',
@@ -161,10 +156,13 @@ export default {
         }
       })
     },
-    getHookList(data) {
-      pullData(data).then((response) => {
+    fetchData() {
+      pullData({
+      ...this.query
+      }).then((response) => {
         if (response.code === 0) {
-          this.tableData = response.data
+          this.tableData = response.data.list
+          this.page = response.data.page
         }
       })
     }
