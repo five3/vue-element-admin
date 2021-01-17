@@ -57,6 +57,7 @@
             <el-pagination
               background
               layout="prev, pager, next"
+              @current-change="handleCurrentChange"
               :page-size="query.pageSize"
               :total="query.total">
             </el-pagination>
@@ -130,9 +131,7 @@ export default {
     }
   },
   mounted() {
-    this.getHookList({
-      ...this.query
-    })
+    this.fetchData()
   },
   methods: {
     createHook() {
@@ -148,25 +147,28 @@ export default {
     onSubmit() {
       submit(this.form).then((response) => {
         if (response.code === 0) {
-          this.getHookList({
-            page: 1,
-            pageSize: 10
-          })
+          this.drawer = false
+          this.query.pageNum = 1
+          this.fetchData()
           this.$message({
             showClose: true,
             message: '保存成功！',
             type: 'success'
           })
-          this.drawer = false
         }
       })
     },
-    getHookList(data) {
-      pullData(data).then((response) => {
+    fetchData() {
+      pullData(this.query).then((response) => {
         if (response.code === 0) {
-          this.tableData = response.data
+          this.tableData = response.data.list
+          this.query.total = response.data.page.total
         }
       })
+    },
+    handleCurrentChange(val) {
+      this.query.pageNum = val
+      this.fetchData()
     }
   }
 }
