@@ -6,7 +6,8 @@
       </el-form-item>
       <el-form-item label="匹配域名">
         <el-input
-        v-model="formData.host"        placeholder="Mock匹配的请求域名，比如： www.baidu.com。 匹配任意域名可使用*"></el-input>
+        v-model="formData.host"
+        placeholder="Mock匹配的请求域名，比如： www.baidu.com。 匹配任意域名可使用*"></el-input>
       </el-form-item>
       <el-form-item label="匹配路径">
         <el-input
@@ -32,13 +33,23 @@
           v-model="formData.headers">
         </el-input>
       </el-form-item>
+      <el-form-item label="Mock类型">
+        <el-select v-model="formData.type" placeholder="请选择一种Mock类型">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="Mock响应体">
         <el-input
+          v-model="formData.content"
           type="textarea"
           :rows="4"
           placeholder="请输入Mock响应体内容，需要与Mock头信息指定的格式一致"
-          v-model="formData.content">
-        </el-input>
+        />
       </el-form-item>
       <el-form-item label="未匹配处理">
         <el-radio v-model="formData.noMatch" label="empty">空字符</el-radio>
@@ -61,18 +72,14 @@
     </el-drawer>
   </div>
 </template>
-
 <script>
-
 import { getTestMock, setTestMock } from '@/api/imock'
 export default {
-  name: 'imock',
   data() {
     return {
       title: 'iMock设置',
       drawer: false,
       direction: 'rtl',
-      activeName: 'prod',
       formData: {
         host: null,
         path: null,
@@ -80,12 +87,26 @@ export default {
         code: null,
         noMatch: 'empty'
       },
-      mockData: {}
+      mockData: {},
+      options: [
+        {
+          'label': '纯文本',
+          'value': 'text'
+        },
+        {
+          'label': '参数化',
+          'value': 'dynamic'
+        },
+        {
+          'label': 'Python表达式',
+          'value': 'express'
+        }
+      ]
     }
   },
   computed: {
     reqURL: {
-      get () {
+      get() {
         if (this.formData.host) {
           return `http://${this.formData.host}${this.formData.path}`
         } else {
@@ -95,9 +116,8 @@ export default {
     }
   },
   methods: {
-    warpData () {
-      let data = {}
-      
+    warpData() {
+      const data = {}
       data.host = this.formData.host || '*'
       data.url = this.formData.path || '/'
       data.method = this.formData.method || '*'
@@ -105,12 +125,12 @@ export default {
       data.code = this.formData.code || 200
       data.headers = this.formData.headers || '{}'
       data.data = this.formData.content || ''
+      data.type = this.formData.type
       data.headers = JSON.parse(data.headers)
-
       return data
     },
-    onSubmit () {
-      let data = this.warpData()
+    onSubmit() {
+      const data = this.warpData()
       setTestMock(data).then(res => {
         this.$message({
           message: '设置Mock成功！',
@@ -120,9 +140,10 @@ export default {
         this.$log.danger(err)
       })
     },
-    onView () {
+    onView() {
       getTestMock().then(res => {
         this.mockData = res
+        this.drawer = true
         this.$message({
           message: '获取Mock成功！',
           type: 'success'
@@ -130,7 +151,6 @@ export default {
       }).catch(err => {
         this.$log.danger(err)
       })
-      this.drawer = true
     }
   }
 }
