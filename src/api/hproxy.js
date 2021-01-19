@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function submit(data) {
   return request({
-    url: '/api/hproxy',
+    url: '/api/hproxy/_plugs_settings_',
     method: 'post',
     headers: {
       'Content-Type': 'application/json'
@@ -13,7 +13,7 @@ export function submit(data) {
 
 export function pullData(params) {
   return request({
-    url: '/api/hproxy/list',
+    url: '/api/hproxy/_plugs_settings_',
     method: 'get',
     params
   })
