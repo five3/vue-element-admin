@@ -147,16 +147,22 @@ export const constantRoutes = [
     hidden: false,
     children: [
       {
+        path: 'api',
+        component: () => import('@/views/http/api/index'),
+        name: 'http-api',
+        meta: { title: 'HTTP API用例', icon: 'list', noCache: true }
+      },
+      {
         path: 'list',
         component: () => import('@/views/http/list/index'),
         name: 'http-list',
         meta: { title: 'HTTP API列表', icon: 'list', noCache: false }
       },
       {
-        path: 'api',
-        component: () => import('@/views/http/api/index'),
-        name: 'http-api',
-        meta: { title: 'HTTP API用例', icon: 'list', noCache: true }
+        path: 'log',
+        component: () => import('@/views/http/log/index'),
+        name: 'http-log',
+        meta: { title: 'HTTP API日志', icon: 'list', noCache: true }
       }
     ]
   },

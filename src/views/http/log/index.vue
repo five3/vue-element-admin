@@ -20,7 +20,6 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" size="small">查询</el-button>
-          <el-button type="primary" @click="runSelected" size="small">运行所选</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -31,16 +30,10 @@
       :data="tableData"
       min-height="300"
       border
-      style="width: 100%"
-      @selection-change="handleSelectionChange">
-        <el-table-column
-          type="selection"
-          width="50">
-        </el-table-column>
+      style="width: 100%">
         <el-table-column
           prop="name"
           label="用例名称"
-          width="160"
           :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
@@ -55,7 +48,7 @@
         </el-table-column>
         <el-table-column
           prop="status"
-          label="上次执行状态"
+          label="执行状态"
           width="120">
           <template slot-scope="scope">
             <div slot="reference" class="name-wrapper">
@@ -65,16 +58,14 @@
         </el-table-column>
         <el-table-column
           prop="created_time"
-          label="创建时间"
+          label="执行时间"
           width="160">
         </el-table-column>
         <el-table-column
           fixed="right"
           label="操作"
-          width="130">
+          width="60">
           <template slot-scope="scope">
-            <el-button @click="onView(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="onRun(scope.row)" type="text" size="small">运行</el-button>
             <el-button @click="onLog(scope.row)" type="text" size="small">日志</el-button>
           </template>
         </el-table-column>
@@ -88,7 +79,7 @@
       </el-pagination>
     </el-card>
     <el-drawer
-      title=""
+      title="我是标题"
       :visible.sync="show.log"
       :with-header="false">
       <el-input
@@ -103,7 +94,7 @@
 </template>
 
 <script>
-import { getList, runAPI, viewLog } from '@/api/httpapi'
+import { getLogList, viewLogById } from '@/api/httpapi'
 export default {
   data () {
     return {
@@ -120,7 +111,6 @@ export default {
         total: 0
       },
       methodList: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS'],
-      multipleSelection: [],
       log: '',
       show: {
         log: false
@@ -141,7 +131,11 @@ export default {
       this.fetchData()
     },
     fetchData () {
-      getList({
+      if (this.date && this.date.length > 0) {
+        this.form.date1 = this.date[0]
+        this.form.date2 = this.date[1]
+      }
+      getLogList({
         ...this.form,
         ...this.page
       }).then(res => {
@@ -169,54 +163,13 @@ export default {
         row.statusFlag = 'danger'
       }
     },
-    handleSelectionChange (val) {
-      this.multipleSelection = val
-    },
-    onView (row) {
-      this.$router.push({ name: 'http-api', query: { id: row.id } })
-    },
-    onRun (row) {
-      this.loading = true
-      runAPI(row.id).then(res => {
-        row.status = res.result
-        this.warpStatus(row)
-        this.$forceUpdate()
-
-        this.$message.success('成功运行用例')
-        this.loading = false
-      }).catch(err => {
-        console.log(err)
-        this.loading = false
-      })
-    },
     onLog (row) {
-      viewLog(row.id).then(res => {
+      viewLogById(row.id).then(res => {
         this.log = JSON.parse(res.data).join('\r\n')
         this.show.log = true
       }).catch(err => {
         console.log(err)
       })
-    },
-    runSelected () {
-      let len = this.multipleSelection.length
-      this.loading = true
-      for (let i = 0; i < len; i++) {
-        runAPI(this.multipleSelection[i].id).then(res => {
-          this.multipleSelection[i].status = res.result
-          this.warpStatus(this.multipleSelection[i])
-          this.multipleSelection[i].method = this.multipleSelection[i].method.trim()
-          if (i + 1 === len) {
-            this.$forceUpdate()
-            this.$message.success('成功运行用例')
-            this.loading = false
-          }
-        }).catch(err => {
-          console.log(err)
-          if (i + 1 === len) {
-            this.loading = false
-          }
-        })
-      }
     }
   }
 }

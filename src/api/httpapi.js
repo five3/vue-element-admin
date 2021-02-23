@@ -49,6 +49,21 @@ export function runAPI(id) {
 
 export function viewLog(id) {
   return request({
+    url: '/api/http/api/log/' + id,
+    method: 'get'
+  })
+}
+
+export function getLogList(params) {
+  return request({
+    url: '/api/http/log/list',
+    method: 'get',
+    params
+  })
+}
+
+export function viewLogById(id) {
+  return request({
     url: '/api/http/log/' + id,
     method: 'get'
   })

@@ -1,11 +1,12 @@
+/* eslint-disable */
 <template>
   <div class="app-container">
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
       <el-form-item label="用例名称" prop="name">
-        <el-input v-model="form.name" placeholder="请输入一个唯一的用例名称"></el-input>
+        <el-input v-model="form.name" placeholder="请输入一个唯一的用例名称" />
       </el-form-item>
       <el-form-item label="请求URL" prop="url">
-        <el-input v-model="form.url" placeholder="请输入请求URL"></el-input>
+        <el-input v-model="form.url" placeholder="请输入请求URL" />
       </el-form-item>
       <el-form-item label="请求方法">
         <el-checkbox-group v-model="form.method">
@@ -17,10 +18,10 @@
           <el-radio v-model="form.method" label="OPTIONS" @change="radioClicked">OPTIONS</el-radio>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="请求参数" v-show="showBody">
-        <el-input type="textarea" v-model="form.body" :rows="5" placeholder="请输入原生请求字符串，如：name=api&action=test。如果同时需要上传请求文件，则字段形式为JSON格式，如：{&quot;name&quot;: &quot;api&quot;, &quot;action&quot;: &quot;test&quot;}"></el-input>
+      <el-form-item v-show="showBody" label="请求参数">
+        <el-input v-model="form.body" :rows="5" type="textarea" placeholder="请输入原生请求字符串，如：name=api&action=test。如果同时需要上传请求文件，则字段形式为JSON格式，如：{&quot;name&quot;: &quot;api&quot;, &quot;action&quot;: &quot;test&quot;}" />
       </el-form-item>
-      <el-form-item label="请求文件" v-show="showBody">
+      <el-form-item v-show="showBody" label="请求文件">
         <el-upload
           class="upload-demo"
           action="/api/http/file"
@@ -35,18 +36,19 @@
           :on-success="handleSuccess"
           :on-error="handleError"
           :show-file-list="false"
-          style="display: inline-block; width: 350px; margin: 0 10px;">
+          style="display: inline-block; width: 350px; margin: 0 10px;"
+        >
           <el-button size="small" type="primary">点击上传</el-button>
-          <span style="margin: 0 10px;" slot="tip" class="el-upload__tip">最多上传10个文件，单文件大小不超过5MB</span>
+          <span slot="tip" style="margin: 0 10px;" class="el-upload__tip">最多上传10个文件，单文件大小不超过5MB</span>
         </el-upload>
         <div v-for="item in fileList" :key="item.name">
-          <el-input v-model="item.key" placeholder="文件字段名" style="display: inline-block; width: 150px;"></el-input>&nbsp;
-          <el-input v-model="item.name" disabled style="display: inline-block; width: 150px;"></el-input>&nbsp;&nbsp;
-          <i class="el-icon-delete" style="color: red; cursor: pointer;" @click="removeFile(item)"></i>
+          <el-input v-model="item.key" placeholder="文件字段名" style="display: inline-block; width: 150px;" />&nbsp;
+          <el-input v-model="item.name" disabled style="display: inline-block; width: 150px;" />&nbsp;&nbsp;
+          <i class="el-icon-delete" style="color: red; cursor: pointer;" @click="removeFile(item)" />
         </div>
       </el-form-item>
       <el-form-item label="请求头">
-        <el-input type="textarea" v-model="form.headers" :rows="5" placeholder="请输入JSON格式头信息。如：{&quot;Content-Type&quot;: &quot;application/json&quot;}"></el-input>
+        <el-input v-model="form.headers" :rows="5" type="textarea" placeholder="请输入JSON格式头信息。如：{&quot;Content-Type&quot;: &quot;application/json&quot;}" />
       </el-form-item>
       <el-form-item label="验证方式" prop="validate">
         <el-select v-model="form.validate" placeholder="请选择一种验证方式" @change="changeOption">
@@ -54,17 +56,20 @@
             v-for="item in options"
             :key="item.value"
             :label="item.label"
-            :value="item.value">
-          </el-option>
+            :value="item.value"
+          />
         </el-select>
-        <el-input type="textarea" v-show="show.express" v-model="form.express" :rows="5" placeholder="请输入验证内容。"></el-input>
+        <el-input v-show="show.express" v-model="form.express" :rows="5" type="textarea" style="margin-top: 20px;" placeholder="请输入验证内容。" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onDebug">调试用例</el-button>
         <el-button type="primary" @click="onSubmit">保存用例</el-button>
       </el-form-item>
-      <el-form-item label="调试日志" v-show="show.log">
-        <el-input type="textarea" v-model="log" :rows="15" disabled></el-input>
+      <el-form-item v-show="show.log" label="调试结果">
+        {{ result }}
+      </el-form-item>
+      <el-form-item v-show="show.log" label="调试日志">
+        <el-input v-model="log" type="textarea" :rows="15" disabled />
       </el-form-item>
     </el-form>
   </div>
@@ -73,7 +78,7 @@
 <script>
 import { sendData, getData, debugData, deleteFile } from '@/api/httpapi'
 export default {
-  data () {
+  data() {
     return {
       filename: __filename,
       showBody: false,
@@ -118,20 +123,21 @@ export default {
         express: false,
         log: false
       },
-      log: ''
+      log: '',
+      result: ''
     }
   },
-  mounted () {
+  mounted() {
     this.init()
   },
   methods: {
-    init () {
-      let params = this.getParams()
+    init() {
+      const params = this.getParams()
       if (params.id) {
         this.fetchData(params.id)
       }
     },
-    getParams () {
+    getParams() {
       var url = window.location.href
       if (url.indexOf('?') < 0) return {}
 
@@ -145,20 +151,20 @@ export default {
 
       return d
     },
-    fetchData (id) {
+    fetchData(id) {
       getData({
         id
       }).then(res => {
-        this.form = res
-        this.fileList = res.fileList ? JSON.parse(res.fileList) : []
+        this.form = res.data
+        this.fileList = this.form.fileList ? this.form.fileList : []
         this.form.fileList = []
-        this.radioClicked(res.method)
-        this.changeOption(res.validate)
+        this.radioClicked(this.form.method)
+        this.changeOption(this.form.validate)
       }).catch(err => {
         console.log(err)
       })
     },
-    warpFileList () {
+    warpFileList() {
       this.form.fileList = []
       for (let i = 0; i < this.fileList.length; i++) {
         this.form.fileList.push({
@@ -171,7 +177,7 @@ export default {
         })
       }
     },
-    onSubmit () {
+    onSubmit() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.warpFileList()
@@ -186,24 +192,21 @@ export default {
         }
       })
     },
-    onDebug () {
+    onDebug() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.warpFileList()
           debugData(this.form).then(res => {
             this.$message.success('成功调试用例')
-            let s = ''
-            if (res.result === 1) {
-              s += 'result：成功\r\n'
-            } else if (res.result === 2) {
-              s += 'result：失败\r\n'
+            if (res.data.result === 1) {
+              this.result = '通过'
+            } else if (res.data.result === 2) {
+              this.result = '失败'
             } else {
-              s += 'result：异常\r\n'
+              this.result = '异常'
             }
-            for (let k in res.log) {
-              s += `${res.log[k]}\r\n`
-            }
-            this.log = s
+
+            this.log = res.data.log.join('\r\n')
             this.show.log = true
           }).catch(err => {
             console.log(err)
@@ -214,26 +217,19 @@ export default {
         }
       })
     },
-    handlePreview (file) {
+    handlePreview(file) {
       // eslint-disable-next-line
       window.open('javascript:window.name;', '<script>location.replace("' + file.url + '")<\/script>')
     },
-    handleExceed (files, fileList) {
+    handleExceed(files, fileList) {
       this.$message.warning(`当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
     },
-    beforeRemove (file, fileList) {
+    beforeRemove(file, fileList) {
       // return this.$confirm(`确定移除 ${file.name}？`)
     },
-    handleRemove (file, fileList) {
-      // deleteFile({
-      //   url: file.url
-      // }).then(res => {
-      //   this.$message.success('删除文件成功')
-      // }).catch(err => {
-      //   console.log(err)
-      // })
+    handleRemove(file, fileList) {
     },
-    handleSuccess (response, file, fileList) {
+    handleSuccess(response, file, fileList) {
       file.url = response.data[0].url
       file.id = response.data[0].id
       file.fn = response.data[0].fn
@@ -242,18 +238,18 @@ export default {
 
       this.fileList = fileList
     },
-    handleError (err, file, fileList) {
+    handleError(err, file, fileList) {
       console.log(err, file, fileList)
     },
-    beforeUpload (file) {
-      let isLt10M = file.size / 1024 / 1024 <= 5
+    beforeUpload(file) {
+      const isLt10M = file.size / 1024 / 1024 <= 5
       if (!isLt10M) {
         this.$message.error('上传头像图片大小不能超过 5MB!')
         file.reason = '文件大小限制'
         return false
       }
 
-      let exist = this.fileList.filter(item => {
+      const exist = this.fileList.filter(item => {
         return item.name === file.name
       })
       if (exist.length > 0) {
@@ -262,17 +258,17 @@ export default {
         return false
       }
     },
-    radioClicked (v) {
+    radioClicked(v) {
       if (['GET', 'HEAD', 'OPTIONS'].includes(v)) {
         this.showBody = false
       } else {
         this.showBody = true
       }
     },
-    changeOption (v) {
+    changeOption(v) {
       this.show.express = true
     },
-    removeFile (item) {
+    removeFile(item) {
       this.$confirm(`确定移除 ${item.name}？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
