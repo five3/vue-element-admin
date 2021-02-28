@@ -96,7 +96,7 @@
 <script>
 import { getLogList, viewLogById } from '@/api/httpapi'
 export default {
-  data () {
+  data() {
     return {
       filename: __filename,
       tableData: [],
@@ -118,19 +118,19 @@ export default {
       loading: false
     }
   },
-  mounted () {
+  mounted() {
     this.fetchData()
   },
   methods: {
-    onSubmit () {
+    onSubmit() {
       this.page.pageNum = 1
       this.fetchData()
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.page.pageNum = val
       this.fetchData()
     },
-    fetchData () {
+    fetchData() {
       if (this.date && this.date.length > 0) {
         this.form.date1 = this.date[0]
         this.form.date2 = this.date[1]
@@ -148,7 +148,7 @@ export default {
         console.log(err)
       })
     },
-    warpStatus (row) {
+    warpStatus(row) {
       if (row.status === 0) {
         row.statusText = '未执行'
         row.statusFlag = 'primary'
@@ -163,7 +163,7 @@ export default {
         row.statusFlag = 'danger'
       }
     },
-    onLog (row) {
+    onLog(row) {
       viewLogById(row.id).then(res => {
         this.log = JSON.parse(res.data).join('\r\n')
         this.show.log = true
