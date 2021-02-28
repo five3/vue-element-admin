@@ -2,36 +2,39 @@
   <div class="app-container">
     <el-form ref="form" :model="formData" label-width="90px">
       <el-form-item label="请求地址">
-        <el-input v-model="reqURL" :disabled="true"></el-input>
+        <el-input v-model="reqURL" :disabled="true" />
       </el-form-item>
       <el-form-item label="匹配域名">
         <el-input
-        v-model="formData.host"
-        placeholder="Mock匹配的请求域名，比如： www.baidu.com。 匹配任意域名可使用*"></el-input>
+          v-model="formData.host"
+          placeholder="Mock匹配的请求域名，比如： www.baidu.com。 匹配任意域名可使用*"
+        />
       </el-form-item>
       <el-form-item label="匹配路径">
         <el-input
-        v-model="formData.path"
-        placeholder="Mock匹配的请求路径，比如：/"></el-input>
+          v-model="formData.path"
+          placeholder="Mock匹配的请求路径，比如：/"
+        />
       </el-form-item>
       <el-form-item label="匹配方法">
         <el-input
-        v-model="formData.method"
-        placeholder="Mock匹配的请求方法，比如： GET。匹配全部请求方法可使用*"></el-input>
+          v-model="formData.method"
+          placeholder="Mock匹配的请求方法，比如： GET。匹配全部请求方法可使用*"
+        />
       </el-form-item>
       <el-form-item label="Mock响应码">
         <el-input
+          v-model.number="formData.code"
           placeholder="请输入Mock响应码。 比如：200"
-          v-model.number="formData.code">
-        </el-input>
+        />
       </el-form-item>
       <el-form-item label="Mock响应头">
         <el-input
-          type="textarea"
+          v-model="formData.headers"
           :rows="4"
+          type="textarea"
           placeholder='请输入Mock响应头，以JSON字典的形式描述。 比如：{"Content-Type": "application/json"}'
-          v-model="formData.headers">
-        </el-input>
+        />
       </el-form-item>
       <el-form-item label="Mock类型">
         <el-select v-model="formData.type" placeholder="请选择一种Mock类型">
@@ -63,9 +66,9 @@
 
     <el-drawer title="" :visible.sync="drawer" :direction="direction" :with-header="true" size="300">
       <div style="padding: 0px 15px; height: 100%;">
-        <el-card style="overflow: auto; height: 700px; margin-bottom: 20px;" type="card" better-scroll>
+        <el-card style="overflow: auto; height: 700px; min-width: 500px; margin-bottom: 20px;" type="card" better-scroll>
           <div>
-            <d2-highlight style="height: 640px; width: 500px;" lang="json" :code="JSON.stringify(mockData, null, 2)" />
+            <pre v-highlightjs="JSON.stringify(mockData, null, 2)"><code class="json" /></pre>
           </div>
         </el-card>
       </div>
@@ -108,7 +111,8 @@ export default {
     reqURL: {
       get() {
         if (this.formData.host) {
-          return `http://${this.formData.host}${this.formData.path}`
+          const path = this.formData.path || '/'
+          return `http://${this.formData.host}${path}`
         } else {
           return ''
         }
@@ -137,19 +141,19 @@ export default {
           type: 'success'
         })
       }).catch(err => {
-        this.$log.danger(err)
+        console.log(err)
       })
     },
     onView() {
       getTestMock().then(res => {
-        this.mockData = res
+        this.mockData = res.data
         this.drawer = true
         this.$message({
           message: '获取Mock成功！',
           type: 'success'
         })
       }).catch(err => {
-        this.$log.danger(err)
+        console.log(err)
       })
     }
   }

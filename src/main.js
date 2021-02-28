@@ -20,6 +20,8 @@ import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
 
+import VueHighlightJS from 'vue-highlightjs'
+import 'highlight.js/styles/atom-one-dark.css'
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -37,7 +39,8 @@ Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)
 })
-
+// Tell Vue.js to use vue-highlightjs
+Vue.use(VueHighlightJS)
 // register global utility filters
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
